@@ -1,0 +1,16 @@
+@echo off
+echo Starting SmartPOS AI Servers...
+
+echo Starting Backend Server...
+start "Backend Server" cmd /k "cd /d x:\smartpos-ai\backend && python simple_server.py"
+
+echo Starting Frontend Server...
+start "Frontend Server" cmd /k "cd /d x:\smartpos-ai\frontend && npm run dev"
+
+echo Both servers are starting...
+echo Backend will be available at: http://localhost:8000
+echo Frontend will be available at: http://localhost:5173
+echo.
+echo Press any key to exit...
+pause
+
