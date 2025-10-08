@@ -1,0 +1,13 @@
+{
+  "name": "smartpos-ai",
+  "version": "1.0.0",
+  "description": "SmartPOS AI - Intelligent Point of Sale System",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "cd frontend && npm run dev",
+    "start": "cd frontend && npm run preview"
+  },
+  "keywords": ["pos", "react", "fastapi", "mongodb", "ai"],
+  "author": "hitman298",
+  "license": "MIT"
+}
