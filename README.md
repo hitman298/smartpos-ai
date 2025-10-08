@@ -2,7 +2,7 @@
 
 A modern, AI-powered Point of Sale (POS) system built with React frontend and FastAPI backend, featuring MongoDB integration for data persistence.
 
-## 🚀 Features
+## Features
 
 - **Modern UI**: Beautiful, responsive React frontend with real-time updates
 - **AI Analytics**: Machine learning-powered demand prediction and analytics
@@ -13,7 +13,7 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 - **Billing System**: Complete transaction processing with multiple payment methods
 - **Real-time Dashboard**: Live analytics and business insights
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - **React 18** with Vite
@@ -27,17 +27,17 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 - **Pydantic** for data validation
 - **Uvicorn** ASGI server
 
-## 📋 Prerequisites
+## Prerequisites
 
 - **Node.js** (v16 or higher)
 - **Python** (v3.8 or higher)
 - **MongoDB** (v4.4 or higher)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/hitman298/smartpos-ai.git
 cd smartpos-ai
 ```
 
@@ -64,7 +64,7 @@ npm run dev
 - **Backend API**: http://localhost:5000
 - **API Documentation**: http://localhost:5000/docs
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 smartpos-ai/
@@ -91,7 +91,7 @@ smartpos-ai/
 └── README.md              # This file
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 Create a `.env` file in the backend directory:
@@ -104,7 +104,7 @@ MONGODB_URL=mongodb://localhost:27017
 2. Ensure MongoDB is running on port 27017
 3. The application will automatically create the `smartpos_ai` database
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Core Endpoints
 - `GET /` - API information
@@ -131,7 +131,7 @@ MONGODB_URL=mongodb://localhost:27017
 - `GET /customers/` - Get all customers
 - `POST /customers/` - Create new customer
 
-## 🎯 Usage
+## Usage
 
 1. **Start the Shop**: Open a session from the navigation
 2. **Add Items**: Use the billing system to add items to cart
@@ -140,7 +140,7 @@ MONGODB_URL=mongodb://localhost:27017
 5. **Manage Inventory**: Track stock levels and receive alerts
 6. **Close Shop**: End the session to finalize daily operations
 
-## 🔍 Features in Detail
+## Features in Detail
 
 ### AI-Powered Analytics
 - Demand prediction based on historical data
@@ -160,7 +160,57 @@ MONGODB_URL=mongodb://localhost:27017
 - Transaction integrity
 - Session continuity
 
-## 🤝 Contributing
+## Deployment
+
+### Option 1: Render (Recommended for Full-Stack)
+
+#### Backend Deployment on Render
+1. Go to [render.com](https://render.com) and sign up
+2. Click "New +" and select "Web Service"
+3. Connect your GitHub repository
+4. Configure the service:
+   - **Name**: smartpos-ai-backend
+   - **Environment**: Python 3
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python working_mongodb_server.py`
+   - **Environment Variables**:
+     - `MONGODB_URL`: Your MongoDB Atlas connection string
+5. Deploy the service
+
+#### Frontend Deployment on Render
+1. Create another "Web Service" on Render
+2. Configure:
+   - **Name**: smartpos-ai-frontend
+   - **Environment**: Node
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm run preview`
+   - **Environment Variables**:
+     - `VITE_API_URL`: Your backend Render URL
+3. Deploy the service
+
+### Option 2: Vercel (Frontend Only)
+
+#### Frontend on Vercel
+1. Go to [vercel.com](https://vercel.com) and sign up
+2. Import your GitHub repository
+3. Configure:
+   - **Framework Preset**: Vite
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Environment Variables**:
+     - `VITE_API_URL`: Your backend URL
+4. Deploy
+
+#### Backend on Railway/Render
+For the backend, use Railway or Render as Vercel doesn't support Python backends well.
+
+### MongoDB Atlas Setup
+1. Go to [mongodb.com/atlas](https://mongodb.com/atlas)
+2. Create a free cluster
+3. Get your connection string
+4. Update your environment variables with the Atlas URL
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -168,17 +218,17 @@ MONGODB_URL=mongodb://localhost:27017
 4. Test thoroughly
 5. Submit a pull request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License.
 
-## 🆘 Support
+## Support
 
 For support and questions:
 - Create an issue in the repository
 - Check the API documentation at `/docs`
 - Review the console logs for debugging
 
-## 🎉 Acknowledgments
+## Acknowledgments
 
 Built with modern web technologies and best practices for scalability and maintainability.
