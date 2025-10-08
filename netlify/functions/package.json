@@ -1,9 +1,0 @@
-{
-  "name": "netlify-functions",
-  "version": "1.0.0",
-  "description": "Netlify functions for SmartPOS AI backend",
-  "main": "backend.js",
-  "dependencies": {
-    "mongodb": "^4.6.0"
-  }
-}

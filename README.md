@@ -29,9 +29,9 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 
 ## Prerequisites
 
-- **Node.js** (v16 or higher)
-- **Python** (v3.8 or higher)
-- **MongoDB** (v4.4 or higher)
+- **Python 3.11+**
+- **Node.js 18+**
+- **MongoDB Atlas account** (free tier available)
 
 ## Quick Start
 
@@ -47,7 +47,6 @@ cd backend
 python -m venv venv
 venv\Scripts\activate  # Windows
 # source venv/bin/activate  # Linux/Mac
-
 pip install -r requirements.txt
 python working_mongodb_server.py
 ```
@@ -62,153 +61,65 @@ npm run dev
 ### 4. Access the Application
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:5000
-- **API Documentation**: http://localhost:5000/docs
+- **API Docs**: http://localhost:5000/docs
 
 ## Project Structure
 
 ```
 smartpos-ai/
 ├── backend/
-│   ├── app/                 # Application modules
-│   │   ├── api/            # API endpoints
-│   │   ├── core/           # Core configuration
-│   │   ├── ml/             # Machine learning models
-│   │   ├── models/         # Data models
-│   │   └── services/       # Business logic
-│   ├── main.py             # Alternative server entry point
-│   ├── working_mongodb_server.py  # Main server
-│   └── requirements.txt    # Python dependencies
+│   ├── app/
+│   │   ├── api/           # API endpoints
+│   │   ├── models/        # Database models
+│   │   ├── ml/           # Machine learning modules
+│   │   └── services/     # Business logic
+│   ├── working_mongodb_server.py  # Main server file
+│   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── contexts/       # React contexts
-│   │   ├── services/       # API services
-│   │   └── routes/         # Routing configuration
-│   ├── package.json        # Node.js dependencies
-│   └── vite.config.js      # Vite configuration
-├── start_servers.bat       # Windows startup script
-├── start_servers.ps1       # PowerShell startup script
-└── README.md              # This file
+│   │   ├── components/   # React components
+│   │   ├── services/     # API services
+│   │   └── contexts/     # React contexts
+│   └── package.json
+└── README.md
 ```
 
-## Configuration
+## Key Components
 
-### Environment Variables
-Create a `.env` file in the backend directory:
-```env
-MONGODB_URL=mongodb://localhost:27017
-```
-
-### MongoDB Setup
-1. Install MongoDB locally or use MongoDB Atlas
-2. Ensure MongoDB is running on port 27017
-3. The application will automatically create the `smartpos_ai` database
-
-## API Endpoints
-
-### Core Endpoints
-- `GET /` - API information
-- `GET /health` - Health check
-- `GET /dashboard/overview` - Dashboard data
-
-### Items Management
+### Backend API Endpoints
+- `GET /` - API health check
 - `GET /items/` - Get all items
-- `POST /items/` - Create new item
-- `PUT /items/{id}` - Update item
-- `DELETE /items/{id}` - Delete item
-
-### Session Management
-- `GET /sessions/current` - Get current session
+- `POST /transactions/` - Create new transaction
 - `GET /sessions/` - Get all sessions
 - `POST /sessions/open` - Open new session
 - `POST /sessions/close` - Close current session
-
-### Transaction Processing
-- `GET /transactions/` - Get all transactions
-- `POST /transactions/` - Create new transaction
-
-### Customer Management
 - `GET /customers/` - Get all customers
-- `POST /customers/` - Create new customer
+- `GET /dashboard/overview` - Get dashboard data
 
-## Usage
+### Frontend Components
+- **Dashboard**: Real-time analytics and overview
+- **Billing**: Transaction processing and cart management
+- **Inventory**: Item and stock management
+- **Customers**: Customer database management
+- **Sessions**: Shop session management
+- **Analytics**: Advanced business analytics
 
-1. **Start the Shop**: Open a session from the navigation
-2. **Add Items**: Use the billing system to add items to cart
-3. **Process Payment**: Complete transactions with cash, card, or UPI
-4. **View Analytics**: Monitor sales, inventory, and customer data
-5. **Manage Inventory**: Track stock levels and receive alerts
-6. **Close Shop**: End the session to finalize daily operations
+## Development
 
-## Features in Detail
+### Backend Development
+```bash
+cd backend
+python working_mongodb_server.py
+```
 
-### AI-Powered Analytics
-- Demand prediction based on historical data
-- Peak hours identification
-- Waste reduction suggestions
-- Customer behavior analysis
+### Frontend Development
+```bash
+cd frontend
+npm run dev
+```
 
-### Real-time Updates
-- Live dashboard with current metrics
-- Real-time inventory tracking
-- Session status monitoring
-- Transaction history
-
-### Data Persistence
-- All data stored in MongoDB
-- Automatic backup and recovery
-- Transaction integrity
-- Session continuity
-
-## Deployment
-
-### Option 1: Render (Recommended for Full-Stack)
-
-#### Backend Deployment on Render
-1. Go to [render.com](https://render.com) and sign up
-2. Click "New +" and select "Web Service"
-3. Connect your GitHub repository
-4. Configure the service:
-   - **Name**: smartpos-ai-backend
-   - **Environment**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `python working_mongodb_server.py`
-   - **Environment Variables**:
-     - `MONGODB_URL`: Your MongoDB Atlas connection string
-5. Deploy the service
-
-#### Frontend Deployment on Render
-1. Create another "Web Service" on Render
-2. Configure:
-   - **Name**: smartpos-ai-frontend
-   - **Environment**: Node
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm run preview`
-   - **Environment Variables**:
-     - `VITE_API_URL`: Your backend Render URL
-3. Deploy the service
-
-### Option 2: Vercel (Frontend Only)
-
-#### Frontend on Vercel
-1. Go to [vercel.com](https://vercel.com) and sign up
-2. Import your GitHub repository
-3. Configure:
-   - **Framework Preset**: Vite
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-   - **Environment Variables**:
-     - `VITE_API_URL`: Your backend URL
-4. Deploy
-
-#### Backend on Railway/Render
-For the backend, use Railway or Render as Vercel doesn't support Python backends well.
-
-### MongoDB Atlas Setup
-1. Go to [mongodb.com/atlas](https://mongodb.com/atlas)
-2. Create a free cluster
-3. Get your connection string
-4. Update your environment variables with the Atlas URL
+### Database
+The application uses MongoDB Atlas for data persistence. All data is automatically saved and synchronized across sessions.
 
 ## Contributing
 
@@ -220,15 +131,8 @@ For the backend, use Railway or Render as Vercel doesn't support Python backends
 
 ## License
 
-This project is licensed under the MIT License.
+MIT License - see LICENSE file for details
 
-## Support
+## Author
 
-For support and questions:
-- Create an issue in the repository
-- Check the API documentation at `/docs`
-- Review the console logs for debugging
-
-## Acknowledgments
-
-Built with modern web technologies and best practices for scalability and maintainability.
+**hitman298** - [GitHub Profile](https://github.com/hitman298)
