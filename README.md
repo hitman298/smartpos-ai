@@ -35,33 +35,41 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 
 ## Quick Start
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/hitman298/smartpos-ai.git
-cd smartpos-ai
-```
+### 1. Local Development Setup
 
-### 2. Backend Setup
+**Backend:**
 ```bash
 cd backend
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
-python working_mongodb_server.py
+python main.py
 ```
 
-### 3. Frontend Setup
+**Frontend:**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### 4. Access the Application
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:5000
-- **API Docs**: http://localhost:5000/docs
+**Or use the batch files:**
+```bash
+start_backend.bat
+start_frontend.bat
+```
+
+### 2. Production Deployment (Free Tier)
+
+🚀 **Deploy without MongoDB on your system!**
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete setup instructions.
+
+**Quick Summary:**
+1. Set up MongoDB Atlas (free tier)
+2. Deploy backend to Render (free tier)
+3. Deploy frontend to Vercel (free tier)
+4. Done! Your app is live!
+
+For detailed instructions, see [QUICK_DEPLOY.md](QUICK_DEPLOY.md)
 
 ## Project Structure
 
