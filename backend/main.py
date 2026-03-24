@@ -63,6 +63,13 @@ class ItemCreate(BaseModel):
     category: str = "General"
     stock: int = 0
 
+class OrderStatusUpdate(BaseModel):
+    status: str
+    name: str
+    price: float
+    category: str = "General"
+    stock: int = 0
+
 class Session(BaseModel):
     start_time: datetime
     is_active: bool = True
@@ -102,6 +109,7 @@ fallback_data = {
     ],
     "sessions": [],
     "transactions": [],
+    "kitchen_orders": [],
     "customers": [
         {"id": "1", "name": "John Doe", "email": "john@email.com", "total_spent": 235.0, "visit_count": 5},
         {"id": "2", "name": "Jane Smith", "email": "jane@email.com", "total_spent": 150.0, "visit_count": 3}
@@ -479,6 +487,40 @@ async def create_transaction(transaction_data: dict):
         # Insert transaction
         new_transaction = insert_to_collection("transactions", transaction_doc)
         
+        try:
+            # Create transaction string ID securely
+            if isinstance(new_transaction, dict):
+                tid = str(new_transaction.get("id", new_transaction.get("_id", "unknown")))
+            else:
+                tid = str(new_transaction.inserted_id) if hasattr(new_transaction, "inserted_id") else "unknown"
+
+            # Deduct Inventory Stock
+            for item in normalized_items:
+                if MONGODB_AVAILABLE and mongodb.database is not None:
+                    from bson import ObjectId
+                    mongodb.database["items"].update_one(
+                        {"_id": ObjectId(item["item_id"])},
+                        {"$inc": {"stock": -int(item["quantity"])}}
+                    )
+                else:
+                    for fb_item in fallback_data["items"]:
+                        if str(fb_item.get("id")) == str(item["item_id"]):
+                            fb_item["stock"] = max(0, fb_item.get("stock", 0) - int(item["quantity"]))
+            
+            # Create Kitchen Order
+            kitchen_order_doc = {
+                "transaction_id": tid,
+                "table": transaction_data.get("table", transaction_data.get("customer_id", "Takeaway")),
+                "items": [{"name": i["item_name"], "qty": i["quantity"]} for i in normalized_items],
+                "status": "pending",
+                "time": datetime.now().strftime("%H:%M"),
+                "priority": "normal",
+                "timestamp": datetime.now()
+            }
+            insert_to_collection("kitchen_orders", kitchen_order_doc)
+        except Exception as e:
+            print(f"Error bridging transaction: {e}")
+        
         # Ensure all ObjectIds and datetimes are converted to strings for JSON serialization
         if isinstance(new_transaction, dict):
             # Convert any ObjectId fields to strings
@@ -821,6 +863,35 @@ async def get_dashboard_overview():
                 "current_session": None
             }
         }
+@app.get("/api/kitchen/orders")
+async def get_kitchen_orders():
+    orders = get_collection_data("kitchen_orders", "kitchen_orders")
+    active_orders = [o for o in orders if o.get("status") in ["pending", "preparing", "ready"]]
+    return {"status": "success", "data": active_orders}
+
+@app.put("/api/kitchen/orders/{order_id}/status")
+async def update_kitchen_order_status(order_id: str, update: OrderStatusUpdate):
+    try:
+        from bson import ObjectId
+        if MONGODB_AVAILABLE and mongodb.database is not None:
+            result = mongodb.database["kitchen_orders"].update_one(
+                {"_id": ObjectId(order_id)},
+                {"$set": {"status": update.status}}
+            )
+            if result.modified_count == 0:
+                raise HTTPException(status_code=404, detail="Order not found")
+        else:
+            found = False
+            for o in fallback_data.get("kitchen_orders", []):
+                if str(o.get("id", "")) == order_id or str(o.get("_id", "")) == order_id or str(o.get("transaction_id", "")) == order_id:
+                    o["status"] = update.status
+                    found = True
+                    break
+            if not found:
+                raise HTTPException(status_code=404, detail="Order not found")
+        return {"status": "success", "message": f"Order status updated"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 # HEALTH CHECK
 @app.get("/health")

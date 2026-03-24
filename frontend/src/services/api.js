@@ -171,4 +171,9 @@ export const reportsAPI = {
   getInventoryReport: () => api.get('/reports/inventory')
 };
 
+export const kitchenAPI = {
+  getAll: () => api.get('/api/kitchen/orders'),
+  updateStatus: (id, status) => api.put(`/api/kitchen/orders/${id}/status`, { status })
+};
+
 export default api;

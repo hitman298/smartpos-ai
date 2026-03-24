@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChefHat, Clock, CheckCircle, ArrowRight, Play, Info, Plus } from 'lucide-react';
-
-const MOCK_ORDERS = [
-  { id: '101', table: '4', items: [{ name: 'Mojito', qty: 2 }, { name: 'Samosa', qty: 4 }], status: 'pending', time: '18:45', priority: 'high' },
-  { id: '102', table: '2', items: [{ name: 'Tea', qty: 2 }], status: 'pending', time: '18:50', priority: 'normal' },
-  { id: '103', table: 'Takeaway', items: [{ name: 'Egg Puff', qty: 1 }], status: 'preparing', time: '18:35', priority: 'normal' },
-  { id: '104', table: '6', items: [{ name: 'Allam Tea', qty: 3 }, { name: 'Samosa', qty: 2 }], status: 'ready', time: '18:20', priority: 'normal' },
-];
+import { kitchenAPI } from '../services/api';
 
 const KitchenDisplay = () => {
-  const [orders, setOrders] = useState(MOCK_ORDERS);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await kitchenAPI.getAll();
+      if (response.data && response.data.data) {
+        setOrders(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching kitchen orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Play a sound when a new order comes in (simulated by clicking a button for now)
   const simulateNewOrder = () => {
@@ -28,10 +42,17 @@ const KitchenDisplay = () => {
     // audio.play();
   };
 
-  const moveOrder = (id, newStatus) => {
+  const moveOrder = async (id, newStatus) => {
+    // Optimistic UI update
     setOrders(orders.map(order => 
-      order.id === id ? { ...order, status: newStatus } : order
+      (order.id === id || order._id === id || order.transaction_id === id) ? { ...order, status: newStatus } : order
     ));
+    try {
+      await kitchenAPI.updateStatus(id, newStatus);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      fetchOrders(); // Revert on failure
+    }
   };
 
   const removeOrder = (id) => {
@@ -52,12 +73,12 @@ const KitchenDisplay = () => {
         borderLeft: order.priority === 'high' ? '4px solid var(--error-color)' : '1px solid var(--gray-200)',
         background: 'var(--bg-primary)'
       }}
-      key={order.id}
+      key={order._id || order.id || Math.random()}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
         <div>
           <h3 style={{ margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
-            #{order.id}
+            #{String(order.transaction_id || order.id || order._id || "NEW").substring(0, 6)}
             <span className="badge" style={{ 
               background: order.table === 'Takeaway' ? 'var(--primary-color)' : 'var(--gray-800)',
               color: 'white',
