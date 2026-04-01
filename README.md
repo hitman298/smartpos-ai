@@ -2,6 +2,12 @@
 
 A modern, AI-powered Point of Sale (POS) system built with React frontend and FastAPI backend, featuring MongoDB integration for data persistence.
 
+## 🚀 Live Demo
+
+**[https://smartpos-ai.onrender.com](https://smartpos-ai.onrender.com)**
+
+> ⚠️ **Note on Cold Start:** The app is hosted on Render's free tier, which spins down after ~15 minutes of inactivity. First load may take **30–60 seconds** to wake up — this is expected. Subsequent requests will be instant.
+
 ## Features
 
 - **Modern UI**: Beautiful, responsive React frontend with real-time updates
@@ -11,6 +17,7 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 - **Inventory Management**: Real-time inventory tracking with low-stock alerts
 - **Customer Management**: Customer database with purchase history
 - **Billing System**: Complete transaction processing with multiple payment methods
+- **Kitchen Display (KDS)**: Real-time kitchen order management
 - **Real-time Dashboard**: Live analytics and business insights
 
 ## Tech Stack
@@ -18,12 +25,12 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 ### Frontend
 - **React 18** with Vite
 - **Modern CSS** with custom design system
-- **Axios** for API communication
+- **Axios** for API communication (60s timeout to handle cold starts)
 - **Context API** for state management
 
 ### Backend
 - **FastAPI** with async/await support
-- **MongoDB** with Motor (async driver)
+- **MongoDB Atlas** with Motor (async driver)
 - **Pydantic** for data validation
 - **Uvicorn** ASGI server
 
@@ -33,9 +40,7 @@ A modern, AI-powered Point of Sale (POS) system built with React frontend and Fa
 - **Node.js 18+**
 - **MongoDB Atlas account** (free tier available)
 
-## Quick Start
-
-### 1. Local Development Setup
+## Quick Start (Local Development)
 
 **Backend:**
 ```bash
@@ -57,19 +62,21 @@ start_backend.bat
 start_frontend.bat
 ```
 
-### 2. Production Deployment (Free Tier)
+## Deployment (Render — Free Tier)
 
-🚀 **Deploy without MongoDB on your system!**
+Both frontend and backend are deployed on **Render**:
 
-See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete setup instructions.
+1. **MongoDB Atlas** — Create a free cluster at [mongodb.com/atlas](https://mongodb.com/atlas)
+2. **Backend (Render Web Service)**
+   - Build Command: `pip install -r backend/requirements.txt`
+   - Start Command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - Set environment variable: `MONGODB_URL=<your atlas connection string>`
+3. **Frontend (Render Static Site)**
+   - Build Command: `cd frontend && npm install && npm run build`
+   - Publish Directory: `frontend/dist`
+   - Set environment variable: `VITE_API_URL=<your render backend URL>`
 
-**Quick Summary:**
-1. Set up MongoDB Atlas (free tier)
-2. Deploy backend to Render (free tier)
-3. Deploy frontend to Vercel (free tier)
-4. Done! Your app is live!
-
-For detailed instructions, see [QUICK_DEPLOY.md](QUICK_DEPLOY.md)
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
 
 ## Project Structure
 
@@ -79,68 +86,33 @@ smartpos-ai/
 │   ├── app/
 │   │   ├── api/           # API endpoints
 │   │   ├── models/        # Database models
-│   │   ├── ml/           # Machine learning modules
-│   │   └── services/     # Business logic
-│   ├── working_mongodb_server.py  # Main server file
+│   │   ├── ml/            # Machine learning modules
+│   │   └── services/      # Business logic
+│   ├── main.py            # Main FastAPI server
 │   └── requirements.txt
 ├── frontend/
 │   ├── src/
-│   │   ├── components/   # React components
-│   │   ├── services/     # API services
-│   │   └── contexts/     # React contexts
+│   │   ├── components/    # React components
+│   │   ├── services/      # API services
+│   │   └── contexts/      # React contexts
 │   └── package.json
 └── README.md
 ```
 
-## Key Components
+## API Endpoints
 
-### Backend API Endpoints
-- `GET /` - API health check
-- `GET /items/` - Get all items
-- `POST /transactions/` - Create new transaction
-- `GET /sessions/` - Get all sessions
-- `POST /sessions/open` - Open new session
-- `POST /sessions/close` - Close current session
-- `GET /customers/` - Get all customers
-- `GET /dashboard/overview` - Get dashboard data
-
-### Frontend Components
-- **Dashboard**: Real-time analytics and overview
-- **Billing**: Transaction processing and cart management
-- **Inventory**: Item and stock management
-- **Customers**: Customer database management
-- **Sessions**: Shop session management
-- **Analytics**: Advanced business analytics
-
-## Development
-
-### Backend Development
-```bash
-cd backend
-python working_mongodb_server.py
-```
-
-### Frontend Development
-```bash
-cd frontend
-npm run dev
-```
-
-### Database
-The application uses MongoDB Atlas for data persistence. All data is automatically saved and synchronized across sessions.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-MIT License - see LICENSE file for details
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/items/` | Get all items |
+| POST | `/transactions/` | Create transaction |
+| GET | `/sessions/current` | Get current session |
+| POST | `/sessions/open` | Open session |
+| POST | `/sessions/close` | Close session |
+| GET | `/customers/` | Get customers |
+| GET | `/dashboard/overview` | Dashboard data |
+| GET | `/analytics/ml/predict-demand` | ML demand predictions |
 
 ## Author
 
-**hitman298** - [GitHub Profile](https://github.com/hitman298)
+**hitman298** — [GitHub Profile](https://github.com/hitman298)
